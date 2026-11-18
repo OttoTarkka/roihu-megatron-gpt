@@ -4,13 +4,11 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH --nodes=1
 #SBATCH --mem=480G
-#SBATCH --partition=gpupilot
-#SBATCH --time=00:15:00
-##SBATCH --partition=gpupilot
-##SBATCH --time=28:00:00
+#SBATCH --partition=gpumedium
+#SBATCH --time=01:00:00
 #SBATCH --exclusive
-#SBATCH --gpus-per-node=4
-#SBATCH --account=project_2017850
+#SBATCH --gres=gpu:gh200:4
+#SBATCH --account=project_2020507
 #SBATCH --output logs/%j.out
 #SBATCH --error logs/%j.err
 
@@ -83,8 +81,8 @@ ln -sf "${logfile_basename}.out" "logs/latest.out"
 ln -sf "${logfile_basename}.err" "logs/latest.err"
 
 module purge
-module load python-pytorch 
-source /scratch/$SLURM_JOB_ACCOUNT/venv/python-pytorch-megatron/bin/activate
+module load python-pytorch/2.13
+source /scratch/$SLURM_JOB_ACCOUNT/venv/python-pytorch2.13-megatron/bin/activate
 
 # PATHS
 BASE_DIR="$SLURM_SUBMIT_DIR"

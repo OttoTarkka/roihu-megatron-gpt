@@ -2,10 +2,10 @@
 #SBATCH --job-name=prepare-venv
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=480G
-#SBATCH --partition=gpupilot
+#SBATCH --partition=gpumedium
 #SBATCH --time=1:00:00
-#SBATCH --gpus-per-node=1
-#SBATCH --account=project_2017850
+#SBATCH --gres=gpu:gh200:1
+#SBATCH --account=project_2020507
 #SBATCH --output logs/%j.out
 #SBATCH --error logs/%j.err
 
@@ -13,7 +13,7 @@
 # a relevant module configuration.
 
 # Directory to create for venv
-VENV_DIR="/scratch/$SLURM_JOB_ACCOUNT/venv/python-pytorch-megatron"
+VENV_DIR="/scratch/$SLURM_JOB_ACCOUNT/venv/python-pytorch2.13-megatron"
 
 # TransformerEngine repository and branch to use
 TE_REPO="https://github.com/NVIDIA/TransformerEngine.git"
@@ -42,7 +42,7 @@ unset LD_PRELOAD
 
 # Set up modules
 module purge  # avoid compiler and cuda conflicts
-module load python-pytorch 
+module load python-pytorch/2.13
 
 # Venv directory
 if [ -e "$VENV_DIR" ]; then
@@ -75,6 +75,9 @@ export NVTE_BUILD_THREADS=4
 export MAX_JOBS=4
 export NVTE_FRAMEWORK=pytorch
 export NVTE_CUDA_ARCHS="90"
+# Skip NCCL EP (MoE expert-parallel comms from 3rdparty/nccl-extensions):
+# it requires NCCL 2.30.7, python-pytorch/2.13 has 2.29.7.
+export NVTE_WITH_NCCL_EP=0
 
 # Clone TE into $TMPDIR
 cd $TMPDIR
@@ -115,7 +118,7 @@ $VENV_DIR.
 Usage:
 
     module purge
-    module load python-pytorch 
+    module load python-pytorch/2.13 
     source $VENV_DIR/bin/activate
 
 EOF

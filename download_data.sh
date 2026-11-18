@@ -5,9 +5,9 @@
 
 set -euo pipefail
 
-PROJECT="project_2017850"    # set to match your account
+PROJECT="project_2020507"    # set to match your account
 
-module load python-pytorch    # for roihu
+module load python-pytorch/2.13    # for roihu
 
 DATA_DIR="/scratch/$PROJECT/preprocessed/wikipesto"
 
